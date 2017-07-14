@@ -1,12 +1,9 @@
 package br.com.pmac.example.springdata.customer;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-
-import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
@@ -17,9 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -51,12 +48,12 @@ public class MongoCustomerRepositoryIntegrationTest {
 		carter = mongoRepository.save(new Customer("Carter", "Beauford"));
 	}
 
-	/*@Test
+	@Test
 	public void setsIdOnSave() {
 
 		Customer dave = mongoRepository.save(new Customer("Dave", "Matthews"));
 		assertThat(dave.getId(), is(notNullValue()));
-	}*/
+	}
 
 	@Test
 	public void findsCustomerByLastname() {

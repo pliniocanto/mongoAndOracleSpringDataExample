@@ -12,10 +12,10 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import oracle.jdbc.pool.OracleDataSource;
+
 @Configuration
-@EnableJpaRepositories(
-		entityManagerFactoryRef = "customerEntityManagerFactory", 
-		transactionManagerRef = "customerTransactionManager")
+@EnableJpaRepositories(entityManagerFactoryRef = "customerEntityManagerFactory", transactionManagerRef = "customerTransactionManager")
 class CustomerConfig {
 
 	@Bean
@@ -46,4 +46,16 @@ class CustomerConfig {
 				setName("customers").//
 				build();
 	}
+
+	/*@Bean
+	DataSource dataSource() throws Exception {
+
+		OracleDataSource dataSource = new OracleDataSource();
+		dataSource.setUser("");
+		dataSource.setPassword("");
+		dataSource.setURL("");
+		dataSource.setImplicitCachingEnabled(true);
+		dataSource.setFastConnectionFailoverEnabled(true);
+		return dataSource;
+	}*/
 }
