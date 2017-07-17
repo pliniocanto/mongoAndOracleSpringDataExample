@@ -1,10 +1,5 @@
 package br.com.pmac.example.springdata.customer;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import javax.persistence.EntityManager;
 
 import org.junit.Before;
@@ -17,18 +12,16 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional(transactionManager = "customerTransactionManager")
-@EnableJpaRepositories(
-		entityManagerFactoryRef = "customerEntityManagerFactory", 
-		transactionManagerRef = "customerTransactionManager")
+@EnableJpaRepositories(entityManagerFactoryRef = "customerEntityManagerFactory", transactionManagerRef = "customerTransactionManager")
 public class MongoCustomerRepositoryIntegrationTest {
 
 	@Autowired
 	MongoCustomerRepository mongoRepository;
 
+	MongoCustomer dave, oliver, carter;
 
 	@Autowired
 	CustomerRepository repository;
@@ -36,40 +29,36 @@ public class MongoCustomerRepositoryIntegrationTest {
 	@Qualifier("customerEntityManagerFactory")
 	EntityManager em;
 
-	Customer dave, oliver, carter;
-
 	@Before
 	public void setUp() {
 
 		mongoRepository.deleteAll();
 
-		dave = mongoRepository.save(new Customer("Dave", "Matthews"));
-		oliver = mongoRepository.save(new Customer("Oliver August", "Matthew"));
-		carter = mongoRepository.save(new Customer("Carter", "Beauford"));
+		dave = mongoRepository.save(new MongoCustomer("Dave", "Matthews"));
+		oliver = mongoRepository.save(new MongoCustomer("Oliver August", "Matthew"));
+		carter = mongoRepository.save(new MongoCustomer("Carter", "Beauford"));
 	}
 
-	@Test
+	/*@Test
 	public void setsIdOnSave() {
-
-		Customer dave = mongoRepository.save(new Customer("Dave", "Matthews"));
+		MongoCustomer dave = mongoRepository.save(new MongoCustomer("Dave", "Matthews"));
 		assertThat(dave.getId(), is(notNullValue()));
-	}
+	}*/
 
 	@Test
-	public void findsCustomerByLastname() {
+	public void mustExportCustomerToOracle() {
+		Iterable<MongoCustomer> docs = mongoRepository.findAll();
+		
+		System.out.println(":::::::::::::::::" + docs.spliterator().getExactSizeIfKnown());
 
-		//Optional<Customer> result = repository.findByLastname("Matthews");
-		
-		Iterable<Customer> result = repository.findAll();
-		
-		for (Customer customer : result) {
-			System.out.println(customer.getFirstname());
+		for (MongoCustomer mongoCustomer : docs) {
+			repository.save(parseMongoToOracle(mongoCustomer));
 		}
 
-		//assertThat(result.iterator().next().getFirstname(), is("Dave"));
-		System.out.println(result.spliterator().getExactSizeIfKnown());
-		assertTrue(result.spliterator().getExactSizeIfKnown() > 1);
-		
+	}
+
+	public Customer parseMongoToOracle(MongoCustomer mongoCustomer) {
+		return new Customer(mongoCustomer.getFirstname(), mongoCustomer.getLastname());
 	}
 
 }

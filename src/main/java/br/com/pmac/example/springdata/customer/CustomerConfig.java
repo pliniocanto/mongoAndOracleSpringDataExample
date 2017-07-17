@@ -5,8 +5,6 @@ import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -19,12 +17,12 @@ import oracle.jdbc.pool.OracleDataSource;
 class CustomerConfig {
 
 	@Bean
-	PlatformTransactionManager customerTransactionManager() {
+	PlatformTransactionManager customerTransactionManager() throws Exception {
 		return new JpaTransactionManager(customerEntityManagerFactory().getObject());
 	}
 
 	@Bean
-	LocalContainerEntityManagerFactoryBean customerEntityManagerFactory() {
+	LocalContainerEntityManagerFactoryBean customerEntityManagerFactory() throws Exception {
 
 		HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
 		jpaVendorAdapter.setGenerateDdl(true);
@@ -38,24 +36,24 @@ class CustomerConfig {
 		return factoryBean;
 	}
 
-	@Bean
+	/*@Bean
 	DataSource customerDataSource() {
 
 		return new EmbeddedDatabaseBuilder().//
 				setType(EmbeddedDatabaseType.HSQL).//
 				setName("customers").//
 				build();
-	}
+	}*/
 
-	/*@Bean
-	DataSource dataSource() throws Exception {
+	@Bean
+	DataSource customerDataSource() throws Exception {
 
 		OracleDataSource dataSource = new OracleDataSource();
-		dataSource.setUser("");
-		dataSource.setPassword("");
-		dataSource.setURL("");
-		dataSource.setImplicitCachingEnabled(true);
-		dataSource.setFastConnectionFailoverEnabled(true);
+		dataSource.setUser("user");
+		dataSource.setPassword("pwd");
+		dataSource.setURL("jdbc:oracle:thin:@//0.0.0.0:1521/serv");
+		//dataSource.setImplicitCachingEnabled(true);
+		//dataSource.setFastConnectionFailoverEnabled(true);
 		return dataSource;
-	}*/
+	}
 }

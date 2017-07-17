@@ -25,11 +25,16 @@ public class DataInitializer {
 	public CustomerId initializeCustomer() {
 		return customers.save(new Customer("Dave", "Matthews")).getId();
 	}
+	
+	@Transactional("customerTransactionManager")
+	public CustomerId initializeCustomer(Customer customer) {
+		return customers.save(customer).getId();
+	}
 
 	@Transactional("orderTransactionManager")
 	public Order initializeOrder(CustomerId customer) {
 
-		Assert.notNull(customer, "Custoemr identifier must not be null!");
+		Assert.notNull(customer, "Customer identifier must not be null!");
 
 		Order order = new Order(customer);
 		order.add(new LineItem("Lakewood Guitar"));

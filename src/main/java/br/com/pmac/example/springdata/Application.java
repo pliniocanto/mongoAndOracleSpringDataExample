@@ -10,7 +10,9 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerA
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import br.com.pmac.example.springdata.customer.Customer.CustomerId;
+import br.com.pmac.example.springdata.customer.Customer;
+import br.com.pmac.example.springdata.customer.MongoCustomer;
+import br.com.pmac.example.springdata.customer.MongoCustomerRepository;
 
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class,
 		DataSourceTransactionManagerAutoConfiguration.class })
@@ -21,12 +23,20 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
-	@Autowired DataInitializer initializer;
+	@Autowired
+	DataInitializer initializer;
+
+	@Autowired
+	MongoCustomerRepository mongoRepository;
 
 	@PostConstruct
 	public void init() {
 
-		CustomerId customerId = initializer.initializeCustomer();
-		initializer.initializeOrder(customerId);
+		Iterable<MongoCustomer> docs = mongoRepository.findAll();
+
+		for (MongoCustomer mongoCustomer : docs) {
+			initializer.initializeCustomer(new Customer(mongoCustomer.getFirstname(), mongoCustomer.getLastname()));
+		}
+
 	}
 }
